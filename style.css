@@ -81,7 +81,7 @@ li {
     color: var(--txt-color);
     text-decoration: none;
     padding: .5rem;
-    background-image: radial-gradient(18% 28% at 24% 50%, #CEFAFFFF 7%, #073AFF00 100%),radial-gradient(18% 28% at 18% 71%, #FFFFFF59 6%, #073AFF00 100%),radial-gradient(70% 53% at 36% 76%, #73F2FFFF 0%, #073AFF00 100%),radial-gradient(42% 53% at 15% 94%, #FFFFFFFF 7%, #073AFF00 100%),radial-gradient(42% 53% at 34% 72%, #FFFFFFFF 7%, #073AFF00 100%),radial-gradient(18% 28% at 35% 87%, #FFFFFFFF 7%, #073AFF00 100%),radial-gradient(31% 43% at 7% 98%, #FFFFFFFF 24%, #073AFF00 100%),radial-gradient(21% 37% at 72% 23%, #D3FF6D9C 24%, #073AFF00 100%),radial-gradient(35% 56% at 91% 74%, #8A4FFFF5 9%, #073AFF00 100%),radial-gradient(74% 86% at 67% 38%, #6DFFAEF5 24%, #073AFF00 100%),linear-gradient(125deg, #4EB5FFFF 1%, #4C00FCFF 100%);;
+    background-image: radial-gradient(18% 28% at 24% 50%, #CEFAFFFF 7%, #073AFF00 100%),radial-gradient(18% 28% at 18% 71%, #FFFFFF59 6%, #073AFF00 100%),radial-gradient(70% 53% at 36% 76%, rgb(115, 141, 255) 0%, #073AFF00 100%),radial-gradient(42% 53% at 15% 94%, #FFFFFFFF 7%, #073AFF00 100%),radial-gradient(42% 53% at 34% 72%, #FFFFFFFF 7%, #073AFF00 100%),radial-gradient(18% 28% at 35% 87%, #FFFFFFFF 7%, #073AFF00 100%),radial-gradient(31% 43% at 7% 98%, #FFFFFFFF 24%, #073AFF00 100%),radial-gradient(21% 37% at 72% 23%, #D3FF6D9C 24%, #073AFF00 100%),radial-gradient(35% 56% at 91% 74%, #4f52fff5 9%, #073AFF00 100%),radial-gradient(74% 86% at 67% 38%, #6DFFAEF5 24%, #073AFF00 100%),linear-gradient(125deg, #4EB5FFFF 1%, rgb(38, 0, 252) 100%);;
     background-size: 0% 0.188rem;
     background-repeat: no-repeat;
     background-position: center bottom;
@@ -119,7 +119,7 @@ section {
 /* Setting the background of the hero section to a gradient. */
 .hero {
     display: grid;
-    background: radial-gradient(66.32% 66.32% at 54.13% 113.95%,rgba(108,38,255,.2) 0,rgba(66,89,255,0) 100%),linear-gradient(211.99deg,rgba(65,157,241,.2) -4.17%,rgba(45,143,234,0) 68.7%),radial-gradient(100% 100% at 28.65% 0,rgba(109,0,255,.25) 0,rgba(250,247,254,0) 100%);
+    background: radial-gradient(66.32% 66.32% at 54.13% 113.95%,rgba(52, 38, 255, 0.2) 0,rgba(66,89,255,0) 100%),linear-gradient(211.99deg,rgba(65,157,241,.2) -4.17%,rgba(45,143,234,0) 68.7%),radial-gradient(100% 100% at 28.65% 0,rgba(109,0,255,.25) 0,rgba(250,247,254,0) 100%);
     grid-template-columns: repeat(2, 1fr);
     place-items: center;
     gap: 3rem;
@@ -137,7 +137,7 @@ section {
     font-size: 3.5rem;
     font-family: 'Carter One', sans-serif;
     font-weight: bold;
-    color: #8358cd;
+    color: #5a58cd;
 }
 
 .txt__upper {
@@ -162,17 +162,17 @@ section {
     border-width: 1px;
     border-style: solid;
     border-radius: 5px;
-    border-color: #7b3fe4;
+    border-color: #423fe4;
     padding: 1rem;
     color: #222;
     margin-top: .5rem;
-    box-shadow: 4px 4px 0px #7b3fe4;
+    box-shadow: 4px 4px 0px #3f4ae4;
 }
 
 .btn:hover {
     /*transform: scale(1.1);*/
     color: rgb(239, 248, 252);
-    background-color: #7b3fe4;
+    background-color: #3f42e4;
     box-shadow: unset;
     border: unset;
 }
@@ -182,7 +182,7 @@ section {
 }
 
 .exclamation {
-    color: #7b3fe4;
+    color: #4a3fe4;
 }
 
 .right-hero {
@@ -256,19 +256,19 @@ section {
     width: 100%;
     border-width: 0.063rem;
     border-style: solid;
-    border-color: #7b3fe4;
+    border-color: #4f3fe4;
     background: white;
     border-radius: 0.313rem;
     padding: .5rem;
 }
 
 .cardBtn:hover {
-    background: #7b3fe4;
+    background: #3f58e4;
     color: white;
 }
 
 .testimony {
-    background: #7757ae;
+    background: #576bae;
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -1,4 +1,24 @@
-footer {
+/* footer {
     position: fixed;
     bottom: 0;
+} */
+
+header, main {
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+}
+
+a,b {
+    width: max-content;
+}
+
+section {
+    /* # center items */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    /* items width as parent */
+    /* width: 100%; */
 }

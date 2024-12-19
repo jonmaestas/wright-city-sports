@@ -1,0 +1,169 @@
+/* Base styles with Facebook-like feel */
+:root {
+    --fb-blue: #1877f2;
+    --fb-hover: #166fe5;
+    --fb-bg: #f0f2f5;
+    --fb-text: #050505;
+    --fb-secondary: #65676b;
+    --fb-border: #dadde1;
+    --fb-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    line-height: 1.34;
+    background-color: var(--fb-bg);
+    color: var(--fb-text);
+  }
+  
+  /* Header - Facebook-style top bar */
+  header {
+    background-color: white;
+    box-shadow: var(--fb-shadow);
+    padding: 0.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  header img {
+    height: 60px;
+    width: auto;
+  }
+  
+  /* Main content area */
+  main {
+    max-width: 680px;
+    margin: 16px auto;
+    padding: 0 16px;
+  }
+  
+  /* Section cards */
+  section {
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    padding: 16px;
+    box-shadow: var(--fb-shadow);
+    border: 1px solid var(--fb-border);
+  }
+  
+  /* Typography */
+  h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    color: var(--fb-text);
+  }
+  
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--fb-text);
+  }
+  
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--fb-text);
+  }
+  
+  /* Links styled like Facebook buttons */
+  a {
+    display: block;
+    text-decoration: none;
+    padding: 8px 16px;
+    margin: 8px 0;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    color: var(--fb-text);
+  }
+  
+  a:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Primary action links */
+  a b {
+    color: var(--fb-blue);
+    font-weight: 600;
+  }
+  
+  /* Secondary/info links */
+  a i {
+    color: var(--fb-secondary);
+    font-style: normal;
+  }
+  
+  /* Lists */
+  ul {
+    list-style: none;
+    margin: 12px 0;
+  }
+  
+  li {
+    padding: 8px 0;
+    color: var(--fb-text);
+    border-bottom: 1px solid var(--fb-border);
+  }
+  
+  li:last-child {
+    border-bottom: none;
+  }
+  
+  /* Important notices */
+  i {
+    color: var(--fb-secondary);
+    font-style: normal;
+    display: block;
+    margin: 8px 0;
+  }
+  
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--fb-border);
+    padding-top: 16px;
+    margin-top: 32px;
+  }
+  
+  footer section {
+    text-align: center;
+    box-shadow: none;
+    border: none;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    main {
+      padding: 8px;
+    }
+  
+    section {
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    
+    h1 {
+      font-size: 24px;
+    }
+    
+    h2 {
+      font-size: 20px;
+    }
+  }
+  
+  /* Athletic equipment emoji styling */
+  [aria-label="Baseball, Softball, Tball, Soccer, Basketball, Cheer"] {
+    font-size: 24px;
+    letter-spacing: 0.5em;
+    margin: 16px 0;
+  }

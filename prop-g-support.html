@@ -225,28 +225,6 @@
                         }
                 }
 
-                /* Reset counter for carousel scroll */
-                .scroll-buttons {
-                        display: flex;
-                        justify-content: space-between;
-                        margin-bottom: 10px;
-                }
-
-                .scroll-btn {
-                        background: #3498db;
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        color: white;
-                        font-size: 1.5em;
-                        cursor: pointer;
-                        user-select: none;
-                        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                }
-
                 @keyframes fadeIn {
                         from {
                                 opacity: 0;
@@ -273,11 +251,6 @@
 
                 <div class="mobile-instructions">
                         <p>📱 Pinch to zoom and drag to position your photo. Swipe to browse filters.</p>
-                </div>
-
-                <div class="scroll-buttons">
-                        <div class="scroll-btn" id="scrollLeft">←</div>
-                        <div class="scroll-btn" id="scrollRight">→</div>
                 </div>
 
                 <div class="filter-carousel" id="filterCarousel">
@@ -411,8 +384,6 @@
                 const resetBtn = document.getElementById('resetBtn');
                 const canvas = document.getElementById('canvas');
                 const ctx = canvas.getContext('2d');
-                const scrollLeftBtn = document.getElementById('scrollLeft');
-                const scrollRightBtn = document.getElementById('scrollRight');
 
                 let baseImg, filterImg;
                 let imgX = 0,
@@ -503,7 +474,7 @@
                                 return;
                         }
                         const link = document.createElement('a');
-                        link.download = 'prop-g-photo.png';
+                        link.download = 'prop-g-support.png';
                         link.href = canvas.toDataURL('image/png');
                         link.click();
                 });
@@ -514,15 +485,6 @@
                                 resetImagePosition();
                                 drawCanvas();
                         }
-                });
-
-                // Carousel scroll buttons
-                scrollLeftBtn.addEventListener('click', () => {
-                        filterCarousel.scrollBy({ left: -200, behavior: 'smooth' });
-                });
-
-                scrollRightBtn.addEventListener('click', () => {
-                        filterCarousel.scrollBy({ left: 200, behavior: 'smooth' });
                 });
 
                 // Desktop mouse events

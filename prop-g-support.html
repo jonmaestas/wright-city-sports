@@ -591,23 +591,48 @@
                 }
 
                 function drawCanvas() {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        if (baseImg) {
-                                console.log("Drawing base image", { x: imgX, y: imgY, w: imgWidth * scale, h: imgHeight * scale });
-                                ctx.drawImage(baseImg, imgX, imgY, imgWidth * scale, imgHeight * scale);
-                        }
-                        if (filterImg) {
-                                console.log("Drawing filter image");
-                                ctx.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
+                        try {
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                                if (baseImg) {
+                                        ctx.drawImage(baseImg, imgX, imgY, imgWidth * scale, imgHeight * scale);
+                                }
+
+                                if (filterImg) {
+                                        try {
+                                                ctx.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
+                                        } catch (filterErr) {
+                                                console.error("Error drawing filter", filterErr);
+                                                // Try reload filter
+                                                if (document.querySelector('.filter-item.active')) {
+                                                        const activePath = document.querySelector('.filter-item.active').dataset.filter;
+                                                        loadImage(activePath + '?reload=' + Date.now())
+                                                                .then(img => {
+                                                                        filterImg = img;
+                                                                        requestAnimationFrame(drawCanvas);
+                                                                })
+                                                                .catch(err => console.error("Filter reload failed", err));
+                                                }
+                                        }
+                                }
+                        } catch (err) {
+                                console.error("Canvas drawing error", err);
                         }
                 }
 
                 function loadImage(src) {
                         return new Promise((resolve, reject) => {
                                 const img = new Image();
-                                img.crossOrigin = "anonymous";
+                                // Only set crossOrigin for external URLs, not for local resources
+                                if (src.startsWith('http')) {
+                                        img.crossOrigin = "anonymous";
+                                }
                                 img.onload = () => resolve(img);
-                                img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+                                img.onerror = (err) => {
+                                        console.error(`Failed to load image: ${src}`, err);
+                                        alert(`Failed to load image: ${src}`); // Make the error visible to users
+                                        reject(new Error(`Failed to load image: ${src}`));
+                                };
                                 img.src = src;
                         });
                 }
@@ -619,6 +644,92 @@
                                 drawCanvas();
                         }
                 });
+
+                document.addEventListener('DOMContentLoaded', () => {
+                        // Create a loading indicator
+                        const loadingMsg = document.createElement('div');
+                        loadingMsg.id = 'loadingMessage';
+                        loadingMsg.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: white; padding: 15px; border-radius: 8px; z-index: 1000;';
+                        loadingMsg.textContent = 'Loading filters...';
+                        document.body.appendChild(loadingMsg);
+
+                        // Get all filter elements
+                        const filterItems = document.querySelectorAll('.filter-item');
+                        const totalFilters = filterItems.length;
+                        let loadedFilters = 0;
+
+                        // Preload all filter images
+                        filterItems.forEach(item => {
+                                const filterPath = item.dataset.filter;
+                                const img = new Image();
+
+                                img.onload = () => {
+                                        loadedFilters++;
+                                        if (loadedFilters === totalFilters) {
+                                                loadingMsg.remove();
+                                        }
+                                };
+
+                                img.onerror = () => {
+                                        console.error(`Failed to preload: ${filterPath}`);
+                                        // Try to reload with cache busting
+                                        setTimeout(() => {
+                                                img.src = filterPath + '?t=' + new Date().getTime();
+                                        }, 500);
+                                };
+
+                                img.src = filterPath;
+                        });
+
+                        // Hide loading message after timeout even if not all images load
+                        setTimeout(() => {
+                                if (document.getElementById('loadingMessage')) {
+                                        document.getElementById('loadingMessage').remove();
+                                }
+                        }, 5000);
+                });
+
+                // Improve filter carousel clicking for mobile
+                filterCarousel.addEventListener('touchend', async (e) => {
+                        const filterItem = e.target.closest('.filter-item');
+                        if (filterItem) {
+                                document.querySelectorAll('.filter-item').forEach(item => item.classList.remove('active'));
+                                filterItem.classList.add('active');
+
+                                try {
+                                        // Show loading indicator for this specific filter
+                                        const loadingFilter = document.createElement('div');
+                                        loadingFilter.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.5); color: white; padding: 10px; border-radius: 5px; z-index: 100;';
+                                        loadingFilter.textContent = 'Loading filter...';
+                                        canvas.parentNode.appendChild(loadingFilter);
+
+                                        // Try to load with cache busting
+                                        const filterPath = filterItem.dataset.filter + '?t=' + new Date().getTime();
+                                        filterImg = await loadImage(filterPath);
+                                        drawCanvas();
+                                } catch (err) {
+                                        console.error("Filter load failed", err);
+                                        alert("Failed to load filter. Please try again.");
+                                } finally {
+                                        // Remove loading indicator
+                                        const loadingEl = canvas.parentNode.querySelector('div');
+                                        if (loadingEl) loadingEl.remove();
+                                }
+                        }
+                }, { passive: true });
+
+                // Add device info logging to help troubleshoot
+                function logDeviceInfo() {
+                        const debugInfo = {
+                                userAgent: navigator.userAgent,
+                                screenWidth: window.innerWidth,
+                                screenHeight: window.innerHeight,
+                                pixelRatio: window.devicePixelRatio,
+                                touchSupport: 'ontouchstart' in window
+                        };
+                        console.log('Device Info:', debugInfo);
+                }
+                logDeviceInfo();
         </script>
 </body>
 

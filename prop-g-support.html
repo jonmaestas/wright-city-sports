@@ -266,7 +266,9 @@
 
                 <div class="upload-area" id="uploadArea">
                         <label for="imageInput">Drop or Click to Upload Your Photo</label>
-                        <input type="file" id="imageInput" accept="image/*" capture="environment" />
+                        <!-- <input type="file" id="imageInput" accept="image/*" capture="environment" /> -->
+                        <!--Remove the capture="environment" attribute from the input tag. It forces the camera to open directly on mobile. Without it, the default behavior (choosing between camera or album) will occur.-->
+                        <input type="file" id="imageInput" accept="image/*" />
                 </div>
 
                 <div class="mobile-instructions">

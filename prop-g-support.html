@@ -240,14 +240,12 @@
 
 <body>
         <div class="container">
-                <h1>Prop G Filter Studio</h1>
-
                 <div class="upload-area" id="uploadArea">
                         <label for="imageInput">Drop or Click to Upload Your Photo</label>
-                        <!-- <input type="file" id="imageInput" accept="image/*" capture="environment" /> -->
-                        <!--Remove the capture="environment" attribute from the input tag. It forces the camera to open directly on mobile. Without it, the default behavior (choosing between camera or album) will occur.-->
                         <input type="file" id="imageInput" accept="image/*" />
                 </div>
+
+                <img id="previewImg" style="max-width: 100%; display: none; border-radius: 8px; margin: 10px auto;" />
 
                 <div class="mobile-instructions">
                         <p>📱 Pinch to zoom and drag to position your photo. Swipe to browse filters.</p>
@@ -370,6 +368,7 @@
                 </div>
 
                 <canvas id="canvas"></canvas>
+
                 <div class="controls">
                         <button id="resetBtn">Reset Position</button>
                         <button id="downloadBtn">Download</button>
@@ -383,18 +382,17 @@
                 const downloadBtn = document.getElementById('downloadBtn');
                 const resetBtn = document.getElementById('resetBtn');
                 const canvas = document.getElementById('canvas');
+                const previewImg = document.getElementById('previewImg');
                 const ctx = canvas.getContext('2d');
 
                 let baseImg, filterImg;
-                let imgX = 0,
-                        imgY = 0;
+                let imgX = 0, imgY = 0;
                 let imgWidth, imgHeight;
                 let scale = 1;
                 let isDragging = false;
                 let startX, startY;
                 let initialImgX, initialImgY, initialScale;
 
-                // Upload handling (click or drag-and-drop)
                 uploadArea.addEventListener('click', () => imageInput.click());
                 imageInput.addEventListener('change', handleImageUpload);
                 uploadArea.addEventListener('dragover', (e) => {
@@ -411,20 +409,29 @@
 
                 async function handleImageUpload(e) {
                         if (e.target.files && e.target.files[0]) {
-                                baseImg = await loadImage(URL.createObjectURL(e.target.files[0]));
+                                const file = e.target.files[0];
+                                const objectUrl = URL.createObjectURL(file);
 
-                                // Set canvas dimensions based on screen size
-                                setCanvasDimensions();
+                                try {
+                                        baseImg = await loadImage(objectUrl);
 
-                                // Calculate initial image position and scale
-                                resetImagePosition();
+                                        setCanvasDimensions();
+                                        resetImagePosition();
 
-                                // Store initial position for reset functionality
-                                initialImgX = imgX;
-                                initialImgY = imgY;
-                                initialScale = scale;
+                                        initialImgX = imgX;
+                                        initialImgY = imgY;
+                                        initialScale = scale;
 
-                                drawCanvas();
+                                        drawCanvas();
+
+                                        // Mobile image preview for debugging
+                                        previewImg.src = objectUrl;
+                                        previewImg.style.display = 'block';
+
+                                        setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+                                } catch (err) {
+                                        console.error("Image load failed", err);
+                                }
                         }
                 }
 
@@ -432,7 +439,6 @@
                         const maxWidth = Math.min(window.innerWidth - 40, 800);
                         const maxHeight = window.innerHeight * 0.6;
 
-                        // Maintain aspect ratio
                         if (baseImg.width / baseImg.height > maxWidth / maxHeight) {
                                 canvas.width = maxWidth;
                                 canvas.height = maxWidth * (baseImg.height / baseImg.width);
@@ -443,20 +449,17 @@
                 }
 
                 function resetImagePosition() {
-                        // Calculate scale to fit image properly in canvas
                         const widthRatio = canvas.width / baseImg.width;
                         const heightRatio = canvas.height / baseImg.height;
-                        scale = Math.min(widthRatio, heightRatio) * 0.9; // 90% of fitting size
+                        scale = Math.min(widthRatio, heightRatio) * 0.9;
 
                         imgWidth = baseImg.width;
                         imgHeight = baseImg.height;
 
-                        // Center the image
                         imgX = (canvas.width - imgWidth * scale) / 2;
                         imgY = (canvas.height - imgHeight * scale) / 2;
                 }
 
-                // Filter selection
                 filterCarousel.addEventListener('click', async (e) => {
                         const filterItem = e.target.closest('.filter-item');
                         if (filterItem) {
@@ -467,7 +470,6 @@
                         }
                 });
 
-                // Download
                 downloadBtn.addEventListener('click', () => {
                         if (!baseImg) {
                                 alert("Please upload an image first");
@@ -479,7 +481,6 @@
                         link.click();
                 });
 
-                // Reset position button
                 resetBtn.addEventListener('click', () => {
                         if (baseImg) {
                                 resetImagePosition();
@@ -487,28 +488,22 @@
                         }
                 });
 
-                // Desktop mouse events
                 canvas.addEventListener('mousedown', startDragging);
                 canvas.addEventListener('mousemove', drag);
                 canvas.addEventListener('mouseup', stopDragging);
                 canvas.addEventListener('mouseleave', stopDragging);
                 canvas.addEventListener('wheel', zoom);
 
-                // Mobile touch events
                 canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
                 canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
                 canvas.addEventListener('touchend', stopDragging);
 
                 function startDragging(e) {
                         if (!baseImg) return;
-
                         const rect = canvas.getBoundingClientRect();
-                        const mouseX = e.clientX - rect.left;
-                        const mouseY = e.clientY - rect.top;
-
+                        startX = e.clientX - rect.left;
+                        startY = e.clientY - rect.top;
                         isDragging = true;
-                        startX = mouseX;
-                        startY = mouseY;
                 }
 
                 function drag(e) {
@@ -532,7 +527,6 @@
 
                 function zoom(e) {
                         if (!baseImg) return;
-
                         e.preventDefault();
                         const zoomFactor = 0.1;
                         const rect = canvas.getBoundingClientRect();
@@ -547,14 +541,12 @@
                         drawCanvas();
                 }
 
-                // Touch handling for mobile with improved pinch-to-zoom
                 let lastTouchDistance = 0;
                 function handleTouchStart(e) {
                         if (!baseImg) return;
-
                         e.preventDefault();
+                        const rect = canvas.getBoundingClientRect();
                         if (e.touches.length === 1) {
-                                const rect = canvas.getBoundingClientRect();
                                 startX = e.touches[0].clientX - rect.left;
                                 startY = e.touches[0].clientY - rect.top;
                                 isDragging = true;
@@ -566,7 +558,6 @@
 
                 function handleTouchMove(e) {
                         if (!baseImg) return;
-
                         e.preventDefault();
                         const rect = canvas.getBoundingClientRect();
                         if (e.touches.length === 1 && isDragging) {
@@ -599,28 +590,28 @@
                         return Math.sqrt(dx * dx + dy * dy);
                 }
 
-                // Draw the canvas
                 function drawCanvas() {
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                         if (baseImg) {
+                                console.log("Drawing base image", { x: imgX, y: imgY, w: imgWidth * scale, h: imgHeight * scale });
                                 ctx.drawImage(baseImg, imgX, imgY, imgWidth * scale, imgHeight * scale);
                         }
                         if (filterImg) {
+                                console.log("Drawing filter image");
                                 ctx.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
                         }
                 }
 
-                // Load image helper
                 function loadImage(src) {
                         return new Promise((resolve, reject) => {
                                 const img = new Image();
+                                img.crossOrigin = "anonymous";
                                 img.onload = () => resolve(img);
                                 img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
                                 img.src = src;
                         });
                 }
 
-                // Handle window resize
                 window.addEventListener('resize', () => {
                         if (baseImg) {
                                 setCanvasDimensions();

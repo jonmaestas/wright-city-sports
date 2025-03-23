@@ -1,317 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prop G Filter Studio</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 10px;
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-            color: #333;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        .upload-area {
-            border: 3px dashed #3498db;
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .upload-area:hover {
-            background: #ecf0f1;
-            border-color: #2ecc71;
-        }
-        .upload-area input {
-            display: none;
-        }
-        .upload-area label {
-            font-size: 1.2em;
-            color: #3498db;
-            cursor: pointer;
-            display: block;
-            padding: 10px;
-        }
-        .filter-carousel {
-            display: flex;
-            overflow-x: auto;
-            gap: 8px;
-            padding: 10px 0;
-            margin-bottom: 20px;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-        }
-        .filter-carousel::-webkit-scrollbar {
-            height: 6px;
-        }
-        .filter-carousel::-webkit-scrollbar-thumb {
-            background: #3498db;
-            border-radius: 6px;
-        }
-        .filter-item {
-            flex: 0 0 auto;
-            width: 80px;
-            height: 110px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            font-size: 0.85em;
-            font-weight: 600;
-            color: #2c3e50;
-            background: #fff;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .filter-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        .filter-thumb img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 10px 10px 0 0;
-        }
-        canvas {
-            display: block;
-            width: 100%;
-            max-width: 800px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin: 0 auto;
-        }
-        .controls {
-            margin-top: 10px;
-            text-align: center;
-        }
-        .controls button {
-            padding: 10px 20px;
-            margin: 0 5px;
-            background: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        .controls button:hover {
-            background: #2ecc71;
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Prop G Filter Studio</title>
+        <style>
+                body {
+                        font-family: 'Poppins', sans-serif;
+                        margin: 0;
+                        padding: 10px;
+                        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+                        color: #333;
+                }
+
+                .container {
+                        max-width: 1000px;
+                        margin: 0 auto;
+                        padding: 15px;
+                        background: rgba(255, 255, 255, 0.9);
+                        border-radius: 15px;
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                }
+
+                .upload-area {
+                        border: 3px dashed #3498db;
+                        padding: 20px;
+                        text-align: center;
+                        border-radius: 10px;
+                        margin-bottom: 20px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                }
+
+                .upload-area:hover {
+                        background: #ecf0f1;
+                        border-color: #2ecc71;
+                }
+
+                .upload-area input {
+                        display: none;
+                }
+
+                .upload-area label {
+                        font-size: 1.2em;
+                        color: #3498db;
+                        cursor: pointer;
+                        display: block;
+                        padding: 10px;
+                }
+
+                .filter-carousel {
+                        display: flex;
+                        overflow-x: auto;
+                        gap: 8px;
+                        padding: 10px 0;
+                        margin-bottom: 20px;
+                        scroll-behavior: smooth;
+                        -webkit-overflow-scrolling: touch;
+                        scrollbar-width: thin;
+                }
+
+                .filter-carousel::-webkit-scrollbar {
+                        height: 6px;
+                }
+
+                .filter-carousel::-webkit-scrollbar-thumb {
+                        background: #3498db;
+                        border-radius: 6px;
+                }
+
+                .filter-item {
+                        flex: 0 0 auto;
+                        width: 80px;
+                        height: 110px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        text-align: center;
+                        font-size: 0.85em;
+                        font-weight: 600;
+                        color: #2c3e50;
+                        background: #fff;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+
+                .filter-item:hover {
+                        transform: scale(1.05);
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                }
+
+                .filter-thumb img {
+                        width: 80px;
+                        height: 80px;
+                        object-fit: cover;
+                        border-radius: 10px 10px 0 0;
+                }
+
+                canvas {
+                        display: block;
+                        width: 100%;
+                        max-width: 800px;
+                        border-radius: 10px;
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                        margin: 0 auto;
+                }
+
+                .controls {
+                        margin-top: 10px;
+                        text-align: center;
+                }
+
+                .controls button {
+                        padding: 10px 20px;
+                        margin: 0 5px;
+                        background: #3498db;
+                        color: #fff;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        transition: background 0.3s ease;
+                }
+
+                .controls button:hover {
+                        background: #2ecc71;
+                }
+        </style>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <div class="container">
-        <div class="upload-area" id="uploadArea">
-            <label for="imageInput">Upload Photo</label>
-            <input type="file" id="imageInput" accept="image/*">
+        <div class="container">
+                <div class="upload-area" id="uploadArea">
+                        <label for="imageInput">Upload Photo</label>
+                        <input type="file" id="imageInput" accept="image/*">
+                </div>
+                <div class="filter-carousel" id="filterCarousel">
+                        <div class="filter-item" data-filter="filters/2.png">
+                                <div class="filter-thumb"><img src="filters/2.png" alt="Filter 2"></div><span>WC
+                                        Proud</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/3.png">
+                                <div class="filter-thumb"><img src="filters/3.png" alt="Filter 3"></div><span>WC
+                                        Proud</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/18.png">
+                                <div class="filter-thumb"><img src="filters/18.png" alt="Filter 18"></div><span>Future
+                                        Wildcat</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/17.png">
+                                <div class="filter-thumb"><img src="filters/17.png" alt="Filter 17"></div>
+                                <span>Pre-K</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/16.png">
+                                <div class="filter-thumb"><img src="filters/16.png" alt="Filter 16"></div>
+                                <span>Kindergarten</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/15.png">
+                                <div class="filter-thumb"><img src="filters/15.png" alt="Filter 15"></div><span>1st
+                                        Grade</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/14.png">
+                                <div class="filter-thumb"><img src="filters/14.png" alt="Filter 14"></div><span>2nd
+                                        Grade</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/13.png">
+                                <div class="filter-thumb"><img src="filters/13.png" alt="Filter 13"></div><span>3rd
+                                        Grade</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/12.png">
+                                <div class="filter-thumb"><img src="filters/12.png" alt="Filter 12"></div><span>4th
+                                        Grade</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/11.png">
+                                <div class="filter-thumb"><img src="filters/11.png" alt="Filter 11"></div><span>5th
+                                        Grade</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/10.png">
+                                <div class="filter-thumb"><img src="filters/10.png" alt="Filter 10"></div><span>6th
+                                        Grade</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/9.png">
+                                <div class="filter-thumb"><img src="filters/9.png" alt="Filter 9"></div><span>7th
+                                        Grade</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/8.png">
+                                <div class="filter-thumb"><img src="filters/8.png" alt="Filter 8"></div><span>8th
+                                        Grade</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/7.png">
+                                <div class="filter-thumb"><img src="filters/7.png" alt="Filter 7"></div>
+                                <span>Freshman</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/6.png">
+                                <div class="filter-thumb"><img src="filters/6.png" alt="Filter 6"></div>
+                                <span>Sophomore</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/5.png">
+                                <div class="filter-thumb"><img src="filters/5.png" alt="Filter 5"></div>
+                                <span>Junior</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/4.png">
+                                <div class="filter-thumb"><img src="filters/4.png" alt="Filter 4"></div>
+                                <span>Senior</span>
+                        </div>
+                        <div class="filter-item" data-filter="filters/19.png">
+                                <div class="filter-thumb"><img src="filters/19.png" alt="Filter 19"></div>
+                                <span>Alumni</span>
+                        </div>
+                </div>
+                <canvas id="canvas"></canvas>
+                <div class="controls">
+                        <button id="resetBtn">Reset</button>
+                        <button id="downloadBtn">Download</button>
+                </div>
         </div>
-        <div class="filter-carousel" id="filterCarousel">
-            <div class="filter-item" data-filter="filters/2.png"><div class="filter-thumb"><img src="filters/2.png" alt="Filter 2"></div><span>WC Proud</span></div>
-            <div class="filter-item" data-filter="filters/3.png"><div class="filter-thumb"><img src="filters/3.png" alt="Filter 3"></div><span>WC Proud</span></div>
-            <div class="filter-item" data-filter="filters/18.png"><div class="filter-thumb"><img src="filters/18.png" alt="Filter 18"></div><span>Future Wildcat</span></div>
-            <div class="filter-item" data-filter="filters/17.png"><div class="filter-thumb"><img src="filters/17.png" alt="Filter 17"></div><span>Pre-K</span></div>
-            <div class="filter-item" data-filter="filters/16.png"><div class="filter-thumb"><img src="filters/16.png" alt="Filter 16"></div><span>Kindergarten</span></div>
-            <div class="filter-item" data-filter="filters/15.png"><div class="filter-thumb"><img src="filters/15.png" alt="Filter 15"></div><span>1st Grade</span></div>
-            <div class="filter-item" data-filter="filters/14.png"><div class="filter-thumb"><img src="filters/14.png" alt="Filter 14"></div><span>2nd Grade</span></div>
-            <div class="filter-item" data-filter="filters/13.png"><div class="filter-thumb"><img src="filters/13.png" alt="Filter 13"></div><span>3rd Grade</span></div>
-            <div class="filter-item" data-filter="filters/12.png"><div class="filter-thumb"><img src="filters/12.png" alt="Filter 12"></div><span>4th Grade</span></div>
-            <div class="filter-item" data-filter="filters/11.png"><div class="filter-thumb"><img src="filters/11.png" alt="Filter 11"></div><span>5th Grade</span></div>
-            <div class="filter-item" data-filter="filters/10.png"><div class="filter-thumb"><img src="filters/10.png" alt="Filter 10"></div><span>6th Grade</span></div>
-            <div class="filter-item" data-filter="filters/9.png"><div class="filter-thumb"><img src="filters/9.png" alt="Filter 9"></div><span>7th Grade</span></div>
-            <div class="filter-item" data-filter="filters/8.png"><div class="filter-thumb"><img src="filters/8.png" alt="Filter 8"></div><span>8th Grade</span></div>
-            <div class="filter-item" data-filter="filters/7.png"><div class="filter-thumb"><img src="filters/7.png" alt="Filter 7"></div><span>Freshman</span></div>
-            <div class="filter-item" data-filter="filters/6.png"><div class="filter-thumb"><img src="filters/6.png" alt="Filter 6"></div><span>Sophomore</span></div>
-            <div class="filter-item" data-filter="filters/5.png"><div class="filter-thumb"><img src="filters/5.png" alt="Filter 5"></div><span>Junior</span></div>
-            <div class="filter-item" data-filter="filters/4.png"><div class="filter-thumb"><img src="filters/4.png" alt="Filter 4"></div><span>Senior</span></div>
-            <div class="filter-item" data-filter="filters/19.png"><div class="filter-thumb"><img src="filters/19.png" alt="Filter 19"></div><span>Alumni</span></div>
-        </div>
-        <canvas id="canvas"></canvas>
-        <div class="controls">
-            <button id="resetBtn">Reset</button>
-            <button id="downloadBtn">Download</button>
-        </div>
-    </div>
 
-    <script>
-        const imageInput = document.getElementById('imageInput');
-        const uploadArea = document.getElementById('uploadArea');
-        const filterCarousel = document.getElementById('filterCarousel');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        <script>
+                const imageInput = document.getElementById('imageInput');
+                const uploadArea = document.getElementById('uploadArea');
+                const filterCarousel = document.getElementById('filterCarousel');
+                const downloadBtn = document.getElementById('downloadBtn');
+                const resetBtn = document.getElementById('resetBtn');
+                const canvas = document.getElementById('canvas');
+                const ctx = canvas.getContext('2d');
 
-        let baseImg, filterImg, imgX = 0, imgY = 0, imgWidth, imgHeight, scale = 1, isDragging = false, startX, startY, lastTouchDistance;
+                let baseImg, filterImg, imgX = 0, imgY = 0, imgWidth, imgHeight, scale = 1, isDragging = false, startX, startY, lastTouchDistance;
 
-        function loadImage(src) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.onload = () => resolve(img);
-                img.onerror = () => reject(new Error(`Failed to load: ${src}`));
-                img.src = src;
-            });
-        }
+                function loadImage(src) {
+                        return new Promise((resolve, reject) => {
+                                const img = new Image();
+                                img.onload = () => resolve(img);
+                                img.onerror = () => reject(new Error(`Failed to load: ${src}`));
+                                img.src = src;
+                        });
+                }
 
-        uploadArea.addEventListener('click', () => imageInput.click());
-        imageInput.addEventListener('change', async (e) => {
-            if (e.target.files[0]) {
-                baseImg = await loadImage(URL.createObjectURL(e.target.files[0]));
-                setCanvasDimensions();
-                resetImagePosition();
-                drawCanvas();
-            }
-        });
+                uploadArea.addEventListener('click', () => imageInput.click());
+                imageInput.addEventListener('change', async (e) => {
+                        if (e.target.files[0]) {
+                                baseImg = await loadImage(URL.createObjectURL(e.target.files[0]));
+                                setCanvasDimensions();
+                                resetImagePosition();
+                                drawCanvas();
+                        }
+                });
 
-        filterCarousel.addEventListener('click', async (e) => {
-            const filterItem = e.target.closest('.filter-item');
-            if (filterItem) {
-                filterImg = await loadImage(filterItem.dataset.filter);
-                drawCanvas();
-            }
-        });
+                filterCarousel.addEventListener('click', async (e) => {
+                        const filterItem = e.target.closest('.filter-item');
+                        if (filterItem) {
+                                filterImg = await loadImage(filterItem.dataset.filter);
+                                drawCanvas();
+                        }
+                });
 
-        downloadBtn.addEventListener('click', () => {
-            if (baseImg) {
-                const link = document.createElement('a');
-                link.download = 'filtered-image.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }
-        });
+                downloadBtn.addEventListener('click', () => {
+                        if (baseImg) {
+                                const link = document.createElement('a');
+                                link.download = 'filtered-image.png';
+                                link.href = canvas.toDataURL('image/png');
+                                link.click();
+                        }
+                });
 
-        resetBtn.addEventListener('click', () => {
-            if (baseImg) {
-                resetImagePosition();
-                drawCanvas();
-            }
-        });
+                resetBtn.addEventListener('click', () => {
+                        if (baseImg) {
+                                resetImagePosition();
+                                drawCanvas();
+                        }
+                });
 
-        canvas.addEventListener('mousedown', startDragging);
-        canvas.addEventListener('mousemove', drag);
-        canvas.addEventListener('mouseup', stopDragging);
-        canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-        canvas.addEventListener('touchend', stopDragging);
-        canvas.addEventListener('wheel', zoom);
+                canvas.addEventListener('mousedown', startDragging);
+                canvas.addEventListener('mousemove', drag);
+                canvas.addEventListener('mouseup', stopDragging);
+                canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+                canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+                canvas.addEventListener('touchend', stopDragging);
+                canvas.addEventListener('wheel', zoom);
 
-        function setCanvasDimensions() {
-            const maxWidth = Math.min(window.innerWidth - 40, 800);
-            const maxHeight = window.innerHeight * 0.6;
-            canvas.width = baseImg.width > baseImg.height ? maxWidth : maxHeight * (baseImg.width / baseImg.height);
-            canvas.height = baseImg.width > baseImg.height ? maxWidth * (baseImg.height / baseImg.width) : maxHeight;
-        }
+                function setCanvasDimensions() {
+                        const maxWidth = Math.min(window.innerWidth - 40, 800);
+                        const maxHeight = window.innerHeight * 0.6;
+                        canvas.width = baseImg.width > baseImg.height ? maxWidth : maxHeight * (baseImg.width / baseImg.height);
+                        canvas.height = baseImg.width > baseImg.height ? maxWidth * (baseImg.height / baseImg.width) : maxHeight;
+                }
 
-        function resetImagePosition() {
-            scale = Math.min(canvas.width / baseImg.width, canvas.height / baseImg.height) * 0.9;
-            imgWidth = baseImg.width;
-            imgHeight = baseImg.height;
-            imgX = (canvas.width - imgWidth * scale) / 2;
-            imgY = (canvas.height - imgHeight * scale) / 2;
-        }
+                function resetImagePosition() {
+                        scale = Math.min(canvas.width / baseImg.width, canvas.height / baseImg.height) * 0.9;
+                        imgWidth = baseImg.width;
+                        imgHeight = baseImg.height;
+                        imgX = (canvas.width - imgWidth * scale) / 2;
+                        imgY = (canvas.height - imgHeight * scale) / 2;
+                }
 
-        function drawCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (baseImg) ctx.drawImage(baseImg, imgX, imgY, imgWidth * scale, imgHeight * scale);
-            if (filterImg) ctx.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
-        }
+                function drawCanvas() {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        if (baseImg) ctx.drawImage(baseImg, imgX, imgY, imgWidth * scale, imgHeight * scale);
+                        if (filterImg) ctx.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
+                }
 
-        function startDragging(e) {
-            if (!baseImg) return;
-            const rect = canvas.getBoundingClientRect();
-            startX = e.clientX - rect.left;
-            startY = e.clientY - rect.top;
-            isDragging = true;
-        }
+                function startDragging(e) {
+                        if (!baseImg) return;
+                        const rect = canvas.getBoundingClientRect();
+                        startX = e.clientX - rect.left;
+                        startY = e.clientY - rect.top;
+                        isDragging = true;
+                }
 
-        function drag(e) {
-            if (isDragging && baseImg) {
-                const rect = canvas.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-                imgX += mouseX - startX;
-                imgY += mouseY - startY;
-                startX = mouseX;
-                startY = mouseY;
-                drawCanvas();
-            }
-        }
+                function drag(e) {
+                        if (isDragging && baseImg) {
+                                const rect = canvas.getBoundingClientRect();
+                                const mouseX = e.clientX - rect.left;
+                                const mouseY = e.clientY - rect.top;
+                                imgX += mouseX - startX;
+                                imgY += mouseY - startY;
+                                startX = mouseX;
+                                startY = mouseY;
+                                drawCanvas();
+                        }
+                }
 
-        function stopDragging() {
-            isDragging = false;
-        }
+                function stopDragging() {
+                        isDragging = false;
+                }
 
-        function zoom(e) {
-            if (!baseImg) return;
-            e.preventDefault();
-            const zoomFactor = 0.1;
-            scale += e.deltaY < 0 ? zoomFactor : -zoomFactor;
-            scale = Math.max(0.1, Math.min(scale, 5));
-            drawCanvas();
-        }
+                function zoom(e) {
+                        if (!baseImg) return;
+                        e.preventDefault();
+                        const zoomFactor = 0.1;
+                        scale += e.deltaY < 0 ? zoomFactor : -zoomFactor;
+                        scale = Math.max(0.1, Math.min(scale, 5));
+                        drawCanvas();
+                }
 
-        function handleTouchStart(e) {
-            if (!baseImg) return;
-            e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            if (e.touches.length === 1) {
-                startX = e.touches[0].clientX - rect.left;
-                startY = e.touches[0].clientY - rect.top;
-                isDragging = true;
-            } else if (e.touches.length === 2) {
-                isDragging = false;
-                lastTouchDistance = getTouchDistance(e.touches);
-            }
-        }
+                function handleTouchStart(e) {
+                        if (!baseImg) return;
+                        e.preventDefault();
+                        const rect = canvas.getBoundingClientRect();
+                        if (e.touches.length === 1) {
+                                startX = e.touches[0].clientX - rect.left;
+                                startY = e.touches[0].clientY - rect.top;
+                                isDragging = true;
+                        } else if (e.touches.length === 2) {
+                                isDragging = false;
+                                lastTouchDistance = getTouchDistance(e.touches);
+                        }
+                }
 
-        function handleTouchMove(e) {
-            if (!baseImg) return;
-            e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            if (e.touches.length === 1 && isDragging) {
-                const mouseX = e.touches[0].clientX - rect.left;
-                const mouseY = e.touches[0].clientY - rect.top;
-                imgX += mouseX - startX;
-                imgY += mouseY - startY;
-                startX = mouseX;
-                startY = mouseY;
-                drawCanvas();
-            } else if (e.touches.length === 2) {
-                const newDistance = getTouchDistance(e.touches);
-                const scaleChange = (newDistance - lastTouchDistance) * 0.01;
-                scale = Math.max(0.1, Math.min(scale + scaleChange, 5));
-                lastTouchDistance = newDistance;
-                drawCanvas();
-            }
-        }
+                function handleTouchMove(e) {
+                        if (!baseImg) return;
+                        e.preventDefault();
+                        const rect = canvas.getBoundingClientRect();
+                        if (e.touches.length === 1 && isDragging) {
+                                const mouseX = e.touches[0].clientX - rect.left;
+                                const mouseY = e.touches[0].clientY - rect.top;
+                                imgX += mouseX - startX;
+                                imgY += mouseY - startY;
+                                startX = mouseX;
+                                startY = mouseY;
+                                drawCanvas();
+                        } else if (e.touches.length === 2) {
+                                const newDistance = getTouchDistance(e.touches);
+                                const scaleChange = (newDistance - lastTouchDistance) * 0.01;
+                                scale = Math.max(0.1, Math.min(scale + scaleChange, 5));
+                                lastTouchDistance = newDistance;
+                                drawCanvas();
+                        }
+                }
 
-        function getTouchDistance(touches) {
-            const dx = touches[0].clientX - touches[1].clientX;
-            const dy = touches[0].clientY - touches[1].clientY;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
+                function getTouchDistance(touches) {
+                        const dx = touches[0].clientX - touches[1].clientX;
+                        const dy = touches[0].clientY - touches[1].clientY;
+                        return Math.sqrt(dx * dx + dy * dy);
+                }
 
-        window.addEventListener('resize', () => {
-            if (baseImg) {
-                setCanvasDimensions();
-                resetImagePosition();
-                drawCanvas();
-            }
-        });
-    </script>
+                window.addEventListener('resize', () => {
+                        if (baseImg) {
+                                setCanvasDimensions();
+                                resetImagePosition();
+                                drawCanvas();
+                        }
+                });
+        </script>
 </body>
+
 </html>

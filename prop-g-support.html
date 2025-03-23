@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prop G Filter Studio</title>
-    <style>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Prop G Filter Studio</title>
+        <style>
                 body {
                         font-family: 'Poppins', sans-serif;
                         margin: 0;
@@ -124,44 +125,50 @@
                         object-fit: cover;
                 }
 
-        canvas {
-            display: block;
-            width: 100%;
-            max-width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin: 0 auto;
-            touch-action: none; /* Prevents default touch behaviors */
-        }
-        .debug-log {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.8em;
-            z-index: 1000;
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+                canvas {
+                        display: block;
+                        width: 100%;
+                        max-width: 100%;
+                        border-radius: 10px;
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                        margin: 0 auto;
+                        touch-action: none;
+                        /* Prevents default touch behaviors */
+                }
+
+                .debug-log {
+                        position: fixed;
+                        bottom: 10px;
+                        left: 10px;
+                        background: rgba(0, 0, 0, 0.7);
+                        color: white;
+                        padding: 10px;
+                        border-radius: 5px;
+                        font-size: 1em;
+                        z-index: 1000;
+                        max-width: 90%;
+                        word-wrap: break-word;
+                }
+        </style>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 </head>
+
 <body>
-    <div class="container">
-        <div class="upload-area" id="uploadArea">
-            <label for="imageInput">Drop or Click to Upload Your Photo</label>
-            <input type="file" id="imageInput" accept="image/*" />
-        </div>
-        <img id="previewImg" style="max-width: 100%; display: none; border-radius: 8px; margin: 10px auto;" />
-        <div class="mobile-instructions">
-            <p>📱 Pinch to zoom and drag to position your photo. Swipe to browse filters.</p>
-        </div>
-        <div class="filter-carousel" id="filterCarousel">
-            <div class="filter-item" data-filter="filters/2.png">
-                <div class="filter-thumb"><img src="filters/2.png" alt="Filter 2"></div>
-                <span>WC Proud</span>
-            </div>
+        <div class="container">
+                <div class="upload-area" id="uploadArea">
+                        <label for="imageInput">Drop or Click to Upload Your Photo</label>
+                        <input type="file" id="imageInput" accept="image/*" />
+                </div>
+                <img id="previewImg"
+                        style="max-width: 100%; display: none; border-radius: 8px; margin: 10px auto; border: 2px solid red;" />
+                <div class="mobile-instructions">
+                        <p>📱 Pinch to zoom and drag to position your photo. Swipe to browse filters.</p>
+                </div>
+                <div class="filter-carousel" id="filterCarousel">
+                        <div class="filter-item" data-filter="filters/2.png">
+                                <div class="filter-thumb"><img src="filters/2.png" alt="Filter 2"></div>
+                                <span>WC Proud</span>
+                        </div>
                         <div class="filter-item" data-filter="filters/3.png">
                                 <div class="filter-thumb">
                                         <img src="filters/3.png" alt="Filter 3">
@@ -269,357 +276,365 @@
                                 </div>
                                 <span>Alumni</span>
                         </div>
+                </div>
+                <canvas id="canvas"></canvas>
+                <div class="controls">
+                        <button id="resetBtn">Reset Position</button>
+                        <button id="downloadBtn">Download</button>
+                </div>
+                <div id="debugLog" class="debug-log"></div>
         </div>
-        <canvas id="canvas"></canvas>
-        <div class="controls">
-            <button id="resetBtn">Reset Position</button>
-            <button id="downloadBtn">Download</button>
-        </div>
-        <div class="debug-log" id="debugLog"></div>
-    </div>
 
-    <script>
-        const imageInput = document.getElementById('imageInput');
-        const uploadArea = document.getElementById('uploadArea');
-        const filterCarousel = document.getElementById('filterCarousel');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const canvas = document.getElementById('canvas');
-        const previewImg = document.getElementById('previewImg');
-        const debugLog = document.getElementById('debugLog');
-        const ctx = canvas.getContext('2d');
+        <script>
+                const imageInput = document.getElementById('imageInput');
+                const uploadArea = document.getElementById('uploadArea');
+                const filterCarousel = document.getElementById('filterCarousel');
+                const downloadBtn = document.getElementById('downloadBtn');
+                const resetBtn = document.getElementById('resetBtn');
+                const canvas = document.getElementById('canvas');
+                const previewImg = document.getElementById('previewImg');
+                const debugLog = document.getElementById('debugLog');
+                const ctx = canvas.getContext('2d');
 
-        let baseImg, filterImg;
-        let imgX = 0, imgY = 0;
-        let imgWidth, imgHeight;
-        let scale = 1;
-        let isDragging = false;
-        let startX, startY;
-        let initialImgX, initialImgY, initialScale;
+                let baseImg, filterImg;
+                let imgX = 0, imgY = 0;
+                let imgWidth, imgHeight;
+                let scale = 1;
+                let isDragging = false;
+                let startX, startY;
+                let initialImgX, initialImgY, initialScale;
 
-        // Adjust canvas for device pixel ratio
-        function adjustCanvasDPI() {
-            const dpr = window.devicePixelRatio || 1;
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            ctx.scale(dpr, dpr);
-        }
-
-        // Enhanced image loading with retries
-        function loadImage(src, retries = 2) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                if (src.startsWith('http')) {
-                    img.crossOrigin = "anonymous";
+                // Adjust canvas for device pixel ratio
+                function adjustCanvasDPI() {
+                        const dpr = window.devicePixelRatio || 1;
+                        const rect = canvas.getBoundingClientRect();
+                        canvas.width = rect.width * dpr;
+                        canvas.height = rect.height * dpr;
+                        ctx.scale(dpr, dpr);
                 }
-                img.onload = () => {
-                    logDebug(`Loaded: ${src}`);
-                    resolve(img);
-                };
-                img.onerror = async (err) => {
-                    console.error(`Failed to load: ${src}`, err);
-                    logDebug(`Failed: ${src}`);
-                    if (retries > 0) {
-                        logDebug(`Retrying (${retries}): ${src}`);
+
+                // Enhanced image loading with retries
+                function loadImage(src, retries = 2) {
+                        return new Promise((resolve, reject) => {
+                                const img = new Image();
+                                if (src.startsWith('http')) {
+                                        img.crossOrigin = "anonymous";
+                                }
+                                img.onload = () => {
+                                        logDebug(`Loaded: ${src}`);
+                                        resolve(img);
+                                };
+                                img.onerror = async (err) => {
+                                        console.error(`Failed to load: ${src}`, err);
+                                        logDebug(`Failed: ${src}`);
+                                        if (retries > 0) {
+                                                logDebug(`Retrying (${retries}): ${src}`);
+                                                setTimeout(() => {
+                                                        loadImage(src + '?t=' + Date.now(), retries - 1)
+                                                                .then(resolve)
+                                                                .catch(reject);
+                                                }, 500);
+                                        } else {
+                                                alert(`Failed to load image after retries: ${src}`);
+                                                reject(new Error(`Failed to load image: ${src}`));
+                                        }
+                                };
+                                img.src = src;
+                        });
+                }
+
+                // Debug logging on screen
+                function logDebug(message) {
+                        console.log(message);
+                        alert(message);
+                        debugLog.textContent = message;
+                        setTimeout(() => { if (debugLog.textContent === message) debugLog.textContent = ''; }, 5000);
+                }
+
+                uploadArea.addEventListener('click', () => {
+                        logDebug("Upload area clicked");
+                        imageInput.click();
+                });
+                imageInput.addEventListener('change', handleImageUpload);
+                uploadArea.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        uploadArea.classList.add('dragover');
+                });
+                uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+                uploadArea.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        uploadArea.classList.remove('dragover');
+                        const file = e.dataTransfer.files[0];
+                        if (file) handleImageUpload({ target: { files: [file] } });
+                });
+
+                async function handleImageUpload(e) {
+                        if (e.target.files && e.target.files[0]) {
+                                logDebug("File selected");
+                                const file = e.target.files[0];
+                                const objectUrl = URL.createObjectURL(file);
+                                try {
+                                        logDebug("Loading image...");
+                                        baseImg = await loadImage(objectUrl);
+                                        logDebug("Image loaded");
+                                        setCanvasDimensions();
+                                        adjustCanvasDPI();
+                                        resetImagePosition();
+                                        initialImgX = imgX;
+                                        initialImgY = imgY;
+                                        initialScale = scale;
+                                        drawCanvas();
+                                        previewImg.src = objectUrl;
+                                        previewImg.style.display = 'block';
+                                        setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+                                } catch (err) {
+                                        logDebug("Image load failed: " + err.message);
+                                        console.error("Image load failed", err);
+                                }
+                        }
+                }
+
+                function setCanvasDimensions() {
+                        const maxWidth = Math.min(window.innerWidth - 40, 800);
+                        const maxHeight = window.innerHeight * 0.6;
+                        if (baseImg.width / baseImg.height > maxWidth / maxHeight) {
+                                canvas.style.width = `${maxWidth}px`;
+                                canvas.style.height = `${maxWidth * (baseImg.height / baseImg.width)}px`;
+                        } else {
+                                canvas.style.height = `${maxHeight}px`;
+                                canvas.style.width = `${maxHeight * (baseImg.width / baseImg.height)}px`;
+                        }
+                }
+
+                function resetImagePosition() {
+                        const rect = canvas.getBoundingClientRect();
+                        const widthRatio = rect.width / baseImg.width;
+                        const heightRatio = rect.height / baseImg.height;
+                        scale = Math.min(widthRatio, heightRatio) * 0.9;
+                        imgWidth = baseImg.width;
+                        imgHeight = baseImg.height;
+                        imgX = (rect.width - imgWidth * scale) / 2;
+                        imgY = (rect.height - imgHeight * scale) / 2;
+                }
+
+                filterCarousel.addEventListener('click', handleFilterClick);
+                filterCarousel.addEventListener('touchend', handleFilterClick, { passive: true });
+
+                async function handleFilterClick(e) {
+                        const filterItem = e.target.closest('.filter-item');
+                        if (filterItem) {
+                                document.querySelectorAll('.filter-item').forEach(item => item.classList.remove('active'));
+                                filterItem.classList.add('active');
+                                try {
+                                        const loadingFilter = document.createElement('div');
+                                        loadingFilter.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.5); color: white; padding: 10px; border-radius: 5px; z-index: 100;';
+                                        loadingFilter.textContent = 'Loading filter...';
+                                        canvas.parentNode.appendChild(loadingFilter);
+                                        filterImg = await loadImage(filterItem.dataset.filter);
+                                        drawCanvas();
+                                } catch (err) {
+                                        logDebug("Filter load failed");
+                                } finally {
+                                        const loadingEl = canvas.parentNode.querySelector('div[style*="position: absolute"]');
+                                        if (loadingEl) loadingEl.remove();
+                                }
+                        }
+                }
+
+                downloadBtn.addEventListener('click', () => {
+                        if (!baseImg) {
+                                alert("Please upload an image first");
+                                return;
+                        }
+                        const link = document.createElement('a');
+                        link.download = 'prop-g-support.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                });
+
+                resetBtn.addEventListener('click', () => {
+                        if (baseImg) {
+                                resetImagePosition();
+                                drawCanvas();
+                        }
+                });
+
+                canvas.addEventListener('mousedown', startDragging);
+                canvas.addEventListener('mousemove', drag);
+                canvas.addEventListener('mouseup', stopDragging);
+                canvas.addEventListener('mouseleave', stopDragging);
+                canvas.addEventListener('wheel', zoom);
+                canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+                canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+                canvas.addEventListener('touchend', stopDragging);
+
+                function startDragging(e) {
+                        if (!baseImg) return;
+                        const rect = canvas.getBoundingClientRect();
+                        startX = e.clientX - rect.left;
+                        startY = e.clientY - rect.top;
+                        isDragging = true;
+                }
+
+                function drag(e) {
+                        if (isDragging && baseImg) {
+                                const rect = canvas.getBoundingClientRect();
+                                const mouseX = e.clientX - rect.left;
+                                const mouseY = e.clientY - rect.top;
+                                const dx = mouseX - startX;
+                                const dy = mouseY - startY;
+                                imgX += dx;
+                                imgY += dy;
+                                startX = mouseX;
+                                startY = mouseY;
+                                drawCanvas();
+                        }
+                }
+
+                function stopDragging() {
+                        isDragging = false;
+                }
+
+                function zoom(e) {
+                        if (!baseImg) return;
+                        e.preventDefault();
+                        const zoomFactor = 0.1;
+                        const rect = canvas.getBoundingClientRect();
+                        const mouseX = e.clientX - rect.left;
+                        const mouseY = e.clientY - rect.top;
+                        const oldScale = scale;
+                        scale += e.deltaY < 0 ? zoomFactor : -zoomFactor;
+                        scale = Math.max(0.1, Math.min(scale, 5));
+                        imgX = mouseX - (mouseX - imgX) * (scale / oldScale);
+                        imgY = mouseY - (mouseY - imgY) * (scale / oldScale);
+                        drawCanvas();
+                }
+
+                let lastTouchDistance = 0;
+                function handleTouchStart(e) {
+                        if (!baseImg) return;
+                        e.preventDefault();
+                        const rect = canvas.getBoundingClientRect();
+                        if (e.touches.length === 1) {
+                                startX = e.touches[0].clientX - rect.left;
+                                startY = e.touches[0].clientY - rect.top;
+                                isDragging = true;
+                        } else if (e.touches.length === 2) {
+                                isDragging = false;
+                                lastTouchDistance = getTouchDistance(e.touches);
+                        }
+                }
+
+                function handleTouchMove(e) {
+                        if (!baseImg) return;
+                        e.preventDefault();
+                        const rect = canvas.getBoundingClientRect();
+                        if (e.touches.length === 1 && isDragging) {
+                                const mouseX = e.touches[0].clientX - rect.left;
+                                const mouseY = e.touches[0].clientY - rect.top;
+                                const dx = mouseX - startX;
+                                const dy = mouseY - startY;
+                                imgX += dx;
+                                imgY += dy;
+                                startX = mouseX;
+                                startY = mouseY;
+                                drawCanvas();
+                        } else if (e.touches.length === 2) {
+                                const newDistance = getTouchDistance(e.touches);
+                                const scaleChange = (newDistance - lastTouchDistance) * 0.01;
+                                const oldScale = scale;
+                                scale = Math.max(0.1, Math.min(scale + scaleChange, 5));
+                                const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+                                const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+                                imgX = centerX - (centerX - imgX) * (scale / oldScale);
+                                imgY = centerY - (centerY - imgY) * (scale / oldScale);
+                                lastTouchDistance = newDistance;
+                                drawCanvas();
+                        }
+                }
+
+                function getTouchDistance(touches) {
+                        const dx = touches[0].clientX - touches[1].clientX;
+                        const dy = touches[0].clientY - touches[1].clientY;
+                        return Math.sqrt(dx * dx + dy * dy);
+                }
+
+                function drawCanvas() {
+                        try {
+                                const rect = canvas.getBoundingClientRect();
+                                ctx.clearRect(0, 0, rect.width, rect.height);
+                                if (baseImg) {
+                                        ctx.drawImage(baseImg, imgX, imgY, imgWidth * scale, imgHeight * scale);
+                                }
+                                if (filterImg) {
+                                        ctx.drawImage(filterImg, 0, 0, rect.width, rect.height);
+                                }
+                                // Add timestamp for debugging
+                                ctx.fillStyle = 'white';
+                                ctx.font = '12px Poppins';
+                                ctx.fillText(new Date().toLocaleTimeString(), 10, 20);
+                        } catch (err) {
+                                logDebug("Canvas drawing error");
+                                console.error("Canvas drawing error", err);
+                        }
+                }
+
+                window.addEventListener('resize', () => {
+                        if (baseImg) {
+                                setCanvasDimensions();
+                                adjustCanvasDPI();
+                                resetImagePosition();
+                                drawCanvas();
+                        }
+                });
+
+                document.addEventListener('DOMContentLoaded', () => {
+                        const loadingMsg = document.createElement('div');
+                        loadingMsg.id = 'loadingMessage';
+                        loadingMsg.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: white; padding: 15px; border-radius: 8px; z-index: 1000;';
+                        loadingMsg.textContent = 'Loading filters...';
+                        document.body.appendChild(loadingMsg);
+
+                        const filterItems = document.querySelectorAll('.filter-item');
+                        const totalFilters = filterItems.length;
+                        let loadedFilters = 0;
+
+                        filterItems.forEach(item => {
+                                const filterPath = item.dataset.filter;
+                                const img = new Image();
+                                img.onload = () => {
+                                        loadedFilters++;
+                                        if (loadedFilters === totalFilters) {
+                                                loadingMsg.remove();
+                                        }
+                                };
+                                img.onerror = () => {
+                                        console.error(`Preload failed: ${filterPath}`);
+                                        logDebug(`Preload failed: ${filterPath}`);
+                                };
+                                img.src = filterPath;
+                        });
+
                         setTimeout(() => {
-                            loadImage(src + '?t=' + Date.now(), retries - 1)
-                                .then(resolve)
-                                .catch(reject);
-                        }, 500);
-                    } else {
-                        alert(`Failed to load image after retries: ${src}`);
-                        reject(new Error(`Failed to load image: ${src}`));
-                    }
-                };
-                img.src = src;
-            });
-        }
+                                if (document.getElementById('loadingMessage')) {
+                                        document.getElementById('loadingMessage').remove();
+                                }
+                        }, 5000);
 
-        // Debug logging on screen
-        function logDebug(message) {
-            console.log(message);
-            debugLog.textContent = message;
-            setTimeout(() => { if (debugLog.textContent === message) debugLog.textContent = ''; }, 3000);
-        }
+                        logDeviceInfo();
+                });
 
-        uploadArea.addEventListener('click', () => imageInput.click());
-        imageInput.addEventListener('change', handleImageUpload);
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file) handleImageUpload({ target: { files: [file] } });
-        });
-
-        async function handleImageUpload(e) {
-            if (e.target.files && e.target.files[0]) {
-                const file = e.target.files[0];
-                const objectUrl = URL.createObjectURL(file);
-                try {
-                    baseImg = await loadImage(objectUrl);
-                    setCanvasDimensions();
-                    adjustCanvasDPI();
-                    resetImagePosition();
-                    initialImgX = imgX;
-                    initialImgY = imgY;
-                    initialScale = scale;
-                    drawCanvas();
-                    previewImg.src = objectUrl;
-                    previewImg.style.display = 'block';
-                    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
-                } catch (err) {
-                    logDebug("Image upload failed");
-                    console.error("Image load failed", err);
+                function logDeviceInfo() {
+                        const debugInfo = {
+                                userAgent: navigator.userAgent,
+                                screenWidth: window.innerWidth,
+                                screenHeight: window.innerHeight,
+                                pixelRatio: window.devicePixelRatio,
+                                touchSupport: 'ontouchstart' in window
+                        };
+                        console.log('Device Info:', debugInfo);
                 }
-            }
-        }
-
-        function setCanvasDimensions() {
-            const maxWidth = Math.min(window.innerWidth - 40, 800);
-            const maxHeight = window.innerHeight * 0.6;
-            if (baseImg.width / baseImg.height > maxWidth / maxHeight) {
-                canvas.style.width = `${maxWidth}px`;
-                canvas.style.height = `${maxWidth * (baseImg.height / baseImg.width)}px`;
-            } else {
-                canvas.style.height = `${maxHeight}px`;
-                canvas.style.width = `${maxHeight * (baseImg.width / baseImg.height)}px`;
-            }
-        }
-
-        function resetImagePosition() {
-            const rect = canvas.getBoundingClientRect();
-            const widthRatio = rect.width / baseImg.width;
-            const heightRatio = rect.height / baseImg.height;
-            scale = Math.min(widthRatio, heightRatio) * 0.9;
-            imgWidth = baseImg.width;
-            imgHeight = baseImg.height;
-            imgX = (rect.width - imgWidth * scale) / 2;
-            imgY = (rect.height - imgHeight * scale) / 2;
-        }
-
-        filterCarousel.addEventListener('click', handleFilterClick);
-        filterCarousel.addEventListener('touchend', handleFilterClick, { passive: true });
-
-        async function handleFilterClick(e) {
-            const filterItem = e.target.closest('.filter-item');
-            if (filterItem) {
-                document.querySelectorAll('.filter-item').forEach(item => item.classList.remove('active'));
-                filterItem.classList.add('active');
-                try {
-                    const loadingFilter = document.createElement('div');
-                    loadingFilter.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.5); color: white; padding: 10px; border-radius: 5px; z-index: 100;';
-                    loadingFilter.textContent = 'Loading filter...';
-                    canvas.parentNode.appendChild(loadingFilter);
-                    filterImg = await loadImage(filterItem.dataset.filter);
-                    drawCanvas();
-                } catch (err) {
-                    logDebug("Filter load failed");
-                } finally {
-                    const loadingEl = canvas.parentNode.querySelector('div[style*="position: absolute"]');
-                    if (loadingEl) loadingEl.remove();
-                }
-            }
-        }
-
-        downloadBtn.addEventListener('click', () => {
-            if (!baseImg) {
-                alert("Please upload an image first");
-                return;
-            }
-            const link = document.createElement('a');
-            link.download = 'prop-g-support.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        });
-
-        resetBtn.addEventListener('click', () => {
-            if (baseImg) {
-                resetImagePosition();
-                drawCanvas();
-            }
-        });
-
-        canvas.addEventListener('mousedown', startDragging);
-        canvas.addEventListener('mousemove', drag);
-        canvas.addEventListener('mouseup', stopDragging);
-        canvas.addEventListener('mouseleave', stopDragging);
-        canvas.addEventListener('wheel', zoom);
-        canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-        canvas.addEventListener('touchend', stopDragging);
-
-        function startDragging(e) {
-            if (!baseImg) return;
-            const rect = canvas.getBoundingClientRect();
-            startX = e.clientX - rect.left;
-            startY = e.clientY - rect.top;
-            isDragging = true;
-        }
-
-        function drag(e) {
-            if (isDragging && baseImg) {
-                const rect = canvas.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-                const dx = mouseX - startX;
-                const dy = mouseY - startY;
-                imgX += dx;
-                imgY += dy;
-                startX = mouseX;
-                startY = mouseY;
-                drawCanvas();
-            }
-        }
-
-        function stopDragging() {
-            isDragging = false;
-        }
-
-        function zoom(e) {
-            if (!baseImg) return;
-            e.preventDefault();
-            const zoomFactor = 0.1;
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-            const oldScale = scale;
-            scale += e.deltaY < 0 ? zoomFactor : -zoomFactor;
-            scale = Math.max(0.1, Math.min(scale, 5));
-            imgX = mouseX - (mouseX - imgX) * (scale / oldScale);
-            imgY = mouseY - (mouseY - imgY) * (scale / oldScale);
-            drawCanvas();
-        }
-
-        let lastTouchDistance = 0;
-        function handleTouchStart(e) {
-            if (!baseImg) return;
-            e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            if (e.touches.length === 1) {
-                startX = e.touches[0].clientX - rect.left;
-                startY = e.touches[0].clientY - rect.top;
-                isDragging = true;
-            } else if (e.touches.length === 2) {
-                isDragging = false;
-                lastTouchDistance = getTouchDistance(e.touches);
-            }
-        }
-
-        function handleTouchMove(e) {
-            if (!baseImg) return;
-            e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            if (e.touches.length === 1 && isDragging) {
-                const mouseX = e.touches[0].clientX - rect.left;
-                const mouseY = e.touches[0].clientY - rect.top;
-                const dx = mouseX - startX;
-                const dy = mouseY - startY;
-                imgX += dx;
-                imgY += dy;
-                startX = mouseX;
-                startY = mouseY;
-                drawCanvas();
-            } else if (e.touches.length === 2) {
-                const newDistance = getTouchDistance(e.touches);
-                const scaleChange = (newDistance - lastTouchDistance) * 0.01;
-                const oldScale = scale;
-                scale = Math.max(0.1, Math.min(scale + scaleChange, 5));
-                const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
-                const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
-                imgX = centerX - (centerX - imgX) * (scale / oldScale);
-                imgY = centerY - (centerY - imgY) * (scale / oldScale);
-                lastTouchDistance = newDistance;
-                drawCanvas();
-            }
-        }
-
-        function getTouchDistance(touches) {
-            const dx = touches[0].clientX - touches[1].clientX;
-            const dy = touches[0].clientY - touches[1].clientY;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
-
-        function drawCanvas() {
-            try {
-                const rect = canvas.getBoundingClientRect();
-                ctx.clearRect(0, 0, rect.width, rect.height);
-                if (baseImg) {
-                    ctx.drawImage(baseImg, imgX, imgY, imgWidth * scale, imgHeight * scale);
-                }
-                if (filterImg) {
-                    ctx.drawImage(filterImg, 0, 0, rect.width, rect.height);
-                }
-                // Add timestamp for debugging
-                ctx.fillStyle = 'white';
-                ctx.font = '12px Poppins';
-                ctx.fillText(new Date().toLocaleTimeString(), 10, 20);
-            } catch (err) {
-                logDebug("Canvas drawing error");
-                console.error("Canvas drawing error", err);
-            }
-        }
-
-        window.addEventListener('resize', () => {
-            if (baseImg) {
-                setCanvasDimensions();
-                adjustCanvasDPI();
-                resetImagePosition();
-                drawCanvas();
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const loadingMsg = document.createElement('div');
-            loadingMsg.id = 'loadingMessage';
-            loadingMsg.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: white; padding: 15px; border-radius: 8px; z-index: 1000;';
-            loadingMsg.textContent = 'Loading filters...';
-            document.body.appendChild(loadingMsg);
-
-            const filterItems = document.querySelectorAll('.filter-item');
-            const totalFilters = filterItems.length;
-            let loadedFilters = 0;
-
-            filterItems.forEach(item => {
-                const filterPath = item.dataset.filter;
-                const img = new Image();
-                img.onload = () => {
-                    loadedFilters++;
-                    if (loadedFilters === totalFilters) {
-                        loadingMsg.remove();
-                    }
-                };
-                img.onerror = () => {
-                    console.error(`Preload failed: ${filterPath}`);
-                    logDebug(`Preload failed: ${filterPath}`);
-                };
-                img.src = filterPath;
-            });
-
-            setTimeout(() => {
-                if (document.getElementById('loadingMessage')) {
-                    document.getElementById('loadingMessage').remove();
-                }
-            }, 5000);
-
-            logDeviceInfo();
-        });
-
-        function logDeviceInfo() {
-            const debugInfo = {
-                userAgent: navigator.userAgent,
-                screenWidth: window.innerWidth,
-                screenHeight: window.innerHeight,
-                pixelRatio: window.devicePixelRatio,
-                touchSupport: 'ontouchstart' in window
-            };
-            console.log('Device Info:', debugInfo);
-        }
-    </script>
+        </script>
 </body>
+
 </html>

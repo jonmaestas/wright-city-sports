@@ -31,6 +31,12 @@
                         margin-bottom: 20px;
                         cursor: pointer;
                         transition: all 0.3s ease;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-height: 60px;
+                        font-size: 1.2em;
+                        color: #3498db;
                 }
 
                 .upload-area:hover {
@@ -284,24 +290,22 @@
                 canvas.addEventListener('wheel', zoom);
 
                 function setCanvasDimensions() {
-                        const maxWidth = Math.min(window.innerWidth - 40, 800);
-                        const maxHeight = window.innerHeight * 0.6;
-                        canvas.width = baseImg.width > baseImg.height ? maxWidth : maxHeight * (baseImg.width / baseImg.height);
-                        canvas.height = baseImg.width > baseImg.height ? maxWidth * (baseImg.height / baseImg.width) : maxHeight;
+                        canvas.width = 1080;
+                        canvas.height = 1080;
                 }
 
                 function resetImagePosition() {
-                        scale = Math.min(canvas.width / baseImg.width, canvas.height / baseImg.height) * 0.9;
                         imgWidth = baseImg.width;
                         imgHeight = baseImg.height;
-                        imgX = (canvas.width - imgWidth * scale) / 2;
-                        imgY = (canvas.height - imgHeight * scale) / 2;
+                        scale = Math.min(1080 / imgWidth, 1080 / imgHeight); // Fit image within 1080x1080
+                        imgX = (1080 - imgWidth * scale) / 2; // Center horizontally
+                        imgY = (1080 - imgHeight * scale) / 2; // Center vertically
                 }
 
                 function drawCanvas() {
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                         if (baseImg) ctx.drawImage(baseImg, imgX, imgY, imgWidth * scale, imgHeight * scale);
-                        if (filterImg) ctx.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
+                        if (filterImg) ctx.drawImage(filterImg, 0, 0, 1080, 1080); // Filter at 1080x1080
                 }
 
                 function startDragging(e) {
@@ -378,14 +382,6 @@
                         const dy = touches[0].clientY - touches[1].clientY;
                         return Math.sqrt(dx * dx + dy * dy);
                 }
-
-                window.addEventListener('resize', () => {
-                        if (baseImg) {
-                                setCanvasDimensions();
-                                resetImagePosition();
-                                drawCanvas();
-                        }
-                });
         </script>
 </body>
 

@@ -133,10 +133,10 @@
 
 <body>
         <div class="container">
-                <div class="upload-area" id="uploadArea">
-                        <label for="imageInput">Upload Photo</label>
-                        <input type="file" id="imageInput" accept="image/*">
-                </div>
+                <label class="upload-area" for="imageInput">
+                        Upload Photo
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                </label>
                 <div class="filter-carousel" id="filterCarousel">
                         <div class="filter-item" data-filter="filters/2.png">
                                 <div class="filter-thumb"><img src="filters/2.png" alt="Filter 2"></div><span>WC
@@ -220,7 +220,6 @@
 
         <script>
                 const imageInput = document.getElementById('imageInput');
-                const uploadArea = document.getElementById('uploadArea');
                 const filterCarousel = document.getElementById('filterCarousel');
                 const downloadBtn = document.getElementById('downloadBtn');
                 const resetBtn = document.getElementById('resetBtn');
@@ -238,13 +237,17 @@
                         });
                 }
 
-                uploadArea.addEventListener('click', () => imageInput.click());
                 imageInput.addEventListener('change', async (e) => {
                         if (e.target.files[0]) {
-                                baseImg = await loadImage(URL.createObjectURL(e.target.files[0]));
-                                setCanvasDimensions();
-                                resetImagePosition();
-                                drawCanvas();
+                                try {
+                                        baseImg = await loadImage(URL.createObjectURL(e.target.files[0]));
+                                        setCanvasDimensions();
+                                        resetImagePosition();
+                                        drawCanvas();
+                                } catch (error) {
+                                        console.error('Error loading image:', error);
+                                        alert('Failed to load image. Please try again.');
+                                }
                         }
                 });
 

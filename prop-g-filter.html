@@ -259,8 +259,8 @@
                                         // Share via Web Share API
                                         await navigator.share({
                                                 files: [file],
-                                                title: 'Prop G Filter Studio',
-                                                text: 'Check out my filtered image!'
+                                                title: 'Prop G',
+                                                text: 'Vote YES on Prop G!'
                                         });
                                 } catch (error) {
                                         console.error('Sharing failed:', error);
@@ -363,8 +363,8 @@
                                 const rect = canvas.getBoundingClientRect();
                                 const mouseX = e.clientX - rect.left;
                                 const mouseY = e.clientY - rect.top;
-                                imgX += mouseX - startX;
-                                imgY += mouseY - startY;
+                                imgX += (mouseX - startX) * 2;
+                                imgY += (mouseY - startY) * 2;
                                 startX = mouseX;
                                 startY = mouseY;
                                 drawCanvas();
@@ -405,15 +405,20 @@
                         if (e.touches.length === 1 && isDragging) {
                                 const mouseX = e.touches[0].clientX - rect.left;
                                 const mouseY = e.touches[0].clientY - rect.top;
-                                imgX += mouseX - startX;
-                                imgY += mouseY - startY;
+                                imgX += (mouseX - startX) * 2;
+                                imgY += (mouseY - startY) * 2;
                                 startX = mouseX;
                                 startY = mouseY;
                                 drawCanvas();
                         } else if (e.touches.length === 2) {
                                 const newDistance = getTouchDistance(e.touches);
                                 const scaleChange = (newDistance - lastTouchDistance) * 0.01;
+                                const oldScale = scale;
                                 scale = Math.max(0.1, Math.min(scale + scaleChange, 5));
+                                const pinchCenterX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+                                const pinchCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+                                imgX -= pinchCenterX * (scale / oldScale - 1);
+                                imgY -= pinchCenterY * (scale / oldScale - 1);
                                 lastTouchDistance = newDistance;
                                 drawCanvas();
                         }

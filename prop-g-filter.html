@@ -412,13 +412,15 @@
                                 drawCanvas();
                         } else if (e.touches.length === 2) {
                                 const newDistance = getTouchDistance(e.touches);
-                                const scaleChange = (newDistance - lastTouchDistance) * 0.01;
+                                const scaleChange = (newDistance - lastTouchDistance) * 0.005; // Slower zoom
                                 const oldScale = scale;
                                 scale = Math.max(0.1, Math.min(scale + scaleChange, 5));
                                 const pinchCenterX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
                                 const pinchCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
-                                imgX -= pinchCenterX * (scale / oldScale - 1);
-                                imgY -= pinchCenterY * (scale / oldScale - 1);
+                                const imgPinchX = (pinchCenterX - imgX) / oldScale; // Relative to image
+                                const imgPinchY = (pinchCenterY - imgY) / oldScale;
+                                imgX = pinchCenterX - imgPinchX * scale;
+                                imgY = pinchCenterY - imgPinchY * scale;
                                 lastTouchDistance = newDistance;
                                 drawCanvas();
                         }

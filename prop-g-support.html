@@ -355,7 +355,15 @@
                         logDebug("Upload area clicked");
                         imageInput.click();
                 });
-                imageInput.addEventListener('change', handleImageUpload);
+                uploadArea.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        logDebug("Touchstart on upload area");
+                        imageInput.click();
+                }, { passive: false });
+                imageInput.addEventListener('change', (e) => {
+                        logDebug("Change event fired");
+                        handleImageUpload(e);
+                });
                 uploadArea.addEventListener('dragover', (e) => {
                         e.preventDefault();
                         uploadArea.classList.add('dragover');

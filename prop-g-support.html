@@ -231,6 +231,7 @@
                 <div class="controls">
                         <button id="resetBtn">Reset</button>
                         <button id="downloadBtn">Download</button>
+                        <button id="shareBtn">Share</button>
                 </div>
         </div>
 
@@ -241,8 +242,39 @@
                 const resetBtn = document.getElementById('resetBtn');
                 const canvas = document.getElementById('canvas');
                 const ctx = canvas.getContext('2d');
+                const shareBtn = document.getElementById('shareBtn');
 
                 let baseImg, filterImg, imgX = 0, imgY = 0, imgWidth, imgHeight, scale = 1, isDragging = false, startX, startY, lastTouchDistance;
+
+                shareBtn.addEventListener('click', async () => {
+                        if (!baseImg) return;
+
+                        // Check if Web Share API is supported
+                        if (navigator.share && navigator.canShare) {
+                                try {
+                                        // Convert canvas to blob
+                                        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                                        const file = new File([blob], 'filtered-image.png', { type: 'image/png' });
+
+                                        // Share via Web Share API
+                                        await navigator.share({
+                                                files: [file],
+                                                title: 'Prop G Filter Studio',
+                                                text: 'Check out my filtered image!'
+                                        });
+                                } catch (error) {
+                                        console.error('Sharing failed:', error);
+                                        alert('Sharing failed. Try saving the image manually.');
+                                }
+                        } else {
+                                // Fallback for unsupported browsers (e.g., Firefox)
+                                const imageDataUrl = canvas.toDataURL('image/png');
+                                const link = document.createElement('a');
+                                link.download = 'filtered-image.png';
+                                link.href = imageDataUrl;
+                                link.click();
+                        }
+                });
 
                 function loadImage(src) {
                         return new Promise((resolve, reject) => {

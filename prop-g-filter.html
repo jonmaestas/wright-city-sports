@@ -230,7 +230,6 @@
                 <canvas id="canvas"></canvas>
                 <div class="controls">
                         <button id="resetBtn">Reset</button>
-                        <button id="downloadBtn">Download</button>
                         <button id="shareBtn">Share</button>
                 </div>
         </div>
@@ -238,7 +237,6 @@
         <script>
                 const imageInput = document.getElementById('imageInput');
                 const filterCarousel = document.getElementById('filterCarousel');
-                const downloadBtn = document.getElementById('downloadBtn');
                 const resetBtn = document.getElementById('resetBtn');
                 const canvas = document.getElementById('canvas');
                 const ctx = canvas.getContext('2d');
@@ -304,15 +302,6 @@
                         if (filterItem) {
                                 filterImg = await loadImage(filterItem.dataset.filter);
                                 drawCanvas();
-                        }
-                });
-
-                downloadBtn.addEventListener('click', () => {
-                        if (baseImg) {
-                                const link = document.createElement('a');
-                                link.download = 'filtered-image.png';
-                                link.href = canvas.toDataURL('image/png');
-                                link.click();
                         }
                 });
 

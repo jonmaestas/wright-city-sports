@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Opening mail…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+    window.onload = function() {
+      window.location.replace(
+        "mailto:mayor@wrightcity.org"
+        + "?cc=play@wrightcitysports.org"
+        + "&subject=" + encodeURIComponent("Keep Wright City Sports Programs In-House")
+        + "&body=" + encodeURIComponent(
+          "Dear Mayor Heiliger and Board of Aldermen,\n\n" +
+          "No, I do not support TSM running our sports programs. " +
+          "I want our programs to remain in-house and be run by Wright City staff and volunteers. " +
+          "These programs are a core part of our community and should stay local.\n\n" +
+          "Thank you,\n[Your Name]"
+        )
+      );
+
+      setTimeout(() => {
+        window.location.replace("/your-voice/thankyou");
+      }, 3000);
+    };
+  </script>
+</head>
+<body></body>
+</html>

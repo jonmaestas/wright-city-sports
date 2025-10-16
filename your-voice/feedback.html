@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Opening mail…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+    window.onload = function() {
+      window.location.replace(
+        "mailto:mayor@wrightcity.org"
+        + "?cc=play@wrightcitysports.org"
+        + "&subject=" + encodeURIComponent("Questions and Thoughts on Future of Wright City Sports Programs")
+        + "&body=" + encodeURIComponent(
+          "Dear Mayor Heiliger and Board of Aldermen,\n\n" +
+          "What other options have been considered for managing our sports programs? " +
+          "I would like to share my thoughts and suggestions below.\n\n" +
+          "[Your Comments Here]\n\n" +
+          "Thank you,\n[Your Name]"
+        )
+      );
+
+      setTimeout(() => {
+        window.location.replace("/your-voice/thankyou");
+      }, 3000);
+    };
+  </script>
+</head>
+<body></body>
+</html>

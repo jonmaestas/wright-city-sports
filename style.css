@@ -189,6 +189,184 @@ li:last-child {
   margin: 16px 0;
 }
 
+/* ===== Announcement Cards ===== */
+
+.announcement {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 28px 20px 20px;
+}
+
+/* -- Signup Announcement -- */
+.announcement-signup {
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(24, 119, 242, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(220, 53, 34, 0.08) 0%, transparent 60%),
+    #fff;
+  border-top: 4px solid var(--blue);
+}
+
+/* -- Badge -- */
+.announcement-badge {
+  display: inline-block;
+  font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--blue);
+  color: #fff;
+  padding: 4px 14px;
+  border-radius: 50px;
+  margin-bottom: 12px;
+  animation: badge-pulse 2.2s ease-in-out infinite;
+}
+
+.badge-closet {
+  background: #e8833a;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+/* -- Sports emoji strip -- */
+.announcement-sports-strip {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.announcement-sports-strip span {
+  display: inline-block;
+  animation: ball-bounce 1.4s ease-in-out infinite;
+}
+.announcement-sports-strip span:nth-child(1) { animation-delay: 0s; }
+.announcement-sports-strip span:nth-child(2) { animation-delay: 0.15s; }
+.announcement-sports-strip span:nth-child(3) { animation-delay: 0.3s; }
+.announcement-sports-strip span:nth-child(4) { animation-delay: 0.45s; }
+.announcement-sports-strip span:nth-child(5) { animation-delay: 0.6s; }
+
+@keyframes ball-bounce {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+}
+
+/* -- Headlines -- */
+.announcement-headline {
+  font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  margin-bottom: 2px;
+  line-height: 1.1;
+}
+
+.headline-closet {
+  color: #e8833a;
+}
+
+.announcement-sub {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+
+.announcement-detail {
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #3a3a3a;
+  max-width: 480px;
+  margin: 0 auto 16px;
+}
+
+/* -- CTA Buttons -- */
+.announcement-cta {
+  display: inline-block;
+  font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  background: var(--blue);
+  color: #fff !important;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 4px 14px rgba(24, 119, 242, 0.35);
+}
+
+.announcement-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(24, 119, 242, 0.45);
+  background-color: var(--blue-hover) !important;
+}
+
+.cta-closet {
+  background: #e8833a;
+  box-shadow: 0 4px 14px rgba(232, 131, 58, 0.35);
+}
+
+.cta-closet:hover {
+  background: #d0742f !important;
+  box-shadow: 0 6px 20px rgba(232, 131, 58, 0.45);
+}
+
+/* -- Sports Closet Address Card -- */
+.announcement-closet {
+  background:
+    radial-gradient(ellipse at 70% 0%, rgba(232, 131, 58, 0.1) 0%, transparent 55%),
+    #fff;
+  border-top: 4px solid #e8833a;
+}
+
+.closet-address-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #fef7f0;
+  border: 1px dashed #e8833a;
+  border-radius: 10px;
+  padding: 12px 20px;
+  margin: 0 auto 14px;
+}
+
+.closet-pin {
+  font-size: 1.5rem;
+  animation: pin-wiggle 2s ease-in-out infinite;
+}
+
+@keyframes pin-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(8deg); }
+  75% { transform: rotate(-8deg); }
+}
+
+.closet-address-card address {
+  font-family: 'Barlow', sans-serif;
+  font-style: normal;
+  font-size: 0.95rem;
+  text-align: left;
+  color: #3a3a3a;
+  line-height: 1.4;
+}
+
+.closet-coming-soon {
+  font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: #e8833a;
+  margin-bottom: 14px;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   main {

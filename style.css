@@ -72,18 +72,16 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 0.5rem 1rem;
-  text-align: center; /* Center-align logo and tagline */
-}
-
-.header-content {
-  display: inline-block;
-  max-width: 100%;
+  padding: 0.6rem 16px;
+  max-width: 680px;
+  margin: 0 auto;
 }
 
 header img {
-  height: 60px;
+  display: block;
+  height: 48px;
   width: auto;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 /* Main Content Area */

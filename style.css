@@ -502,11 +502,11 @@ li:last-child {
 /* -- Facebook icon -- */
 .hub-link-icon--fb {
   background: #1877f2 !important;
-  color: #fff !important;
-  font-family: 'Bebas Neue', 'Arial Black', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  padding: 0;
+}
+
+.hub-link-icon--fb svg {
+  display: block;
 }
 
 .hub-link--social {
@@ -536,28 +536,6 @@ li:last-child {
   margin-bottom: 0;
 }
 
-/* -- Featured variant (Coach's Playbook) -- */
-.hub-link--featured {
-  background: linear-gradient(135deg, #eaf2ff 0%, #f0f4ff 100%) !important;
-  border: 1px solid rgba(24, 119, 242, 0.25) !important;
-  margin-top: 4px;
-}
-
-.hub-link--featured .hub-link-icon {
-  background: var(--blue);
-  color: #fff;
-  font-size: 1.15rem;
-}
-
-.hub-link--featured:hover {
-  border-color: var(--blue) !important;
-  box-shadow: 0 4px 14px rgba(24, 119, 242, 0.15);
-}
-
-.hub-link--featured .hub-link-body strong {
-  color: var(--blue);
-}
-
 /* -- Divider with label -- */
 .hub-divider-label {
   display: flex;
@@ -583,6 +561,33 @@ li:last-child {
   white-space: nowrap;
 }
 
+/* ===== Coach's Playbook Card ===== */
+
+.announcement-playbook {
+  background:
+    radial-gradient(ellipse at 30% 0%, rgba(24, 119, 242, 0.08) 0%, transparent 55%),
+    #fff;
+  border-top: 4px solid var(--blue);
+}
+
+.badge-playbook {
+  background: var(--blue);
+}
+
+.headline-playbook {
+  color: var(--blue);
+}
+
+.cta-playbook {
+  background: var(--blue);
+  box-shadow: 0 4px 14px rgba(24, 119, 242, 0.35);
+}
+
+.cta-playbook:hover {
+  background: var(--blue-hover) !important;
+  box-shadow: 0 6px 20px rgba(24, 119, 242, 0.45);
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   main {
@@ -602,7 +607,57 @@ li:last-child {
     font-size: 1.25rem;
   }
 
+  /* Announcement cards need breathing room on mobile */
+  .announcement {
+    padding: 22px 16px 18px;
+  }
+
+  .announcement-headline {
+    font-size: 1.65rem;
+  }
+
+  .announcement-detail {
+    font-size: 0.9rem;
+  }
+
+  /* Map shrinks gracefully */
+  .closet-map-frame {
+    padding: 3px;
+  }
+
+  .closet-directions-btn {
+    padding: 10px 12px;
+    font-size: 0.88rem;
+  }
+
+  /* Hub section */
+  .hub-section {
+    padding: 20px 14px 16px;
+  }
+
+  .hub-link {
+    padding: 10px 12px;
+    gap: 10px;
+    min-height: 48px;
+  }
+
+  .hub-link-icon {
+    width: 34px;
+    height: 34px;
+  }
+
   .hub-social-grid {
     grid-template-columns: 1fr;
+  }
+
+  .hub-link--social {
+    flex-direction: row;
+    text-align: left !important;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .hub-link--social .hub-link-arrow {
+    display: block;
   }
 }
